@@ -18,8 +18,8 @@ def xo(symb):
            np.sum(np.transpose(pole)[2] == compsymb) < 3 and
            np.sum(np.diagonal(pole) == compsymb) < 3 and
            np.sum(np.diagonal(np.fliplr(pole)) == compsymb) < 3) and \
-            ''.join(pole.flatten()).count('-') > 0: #проверки на победу и на полную доску
-        if symb == 'x' and n == 0: # первый ход противника если он крестик
+            ''.join(pole.flatten()).count('-') > 0: # end of the game check
+        if symb == 'x' and n == 0: # if player's symbol is x. his first move
             print(pd.DataFrame(pole, columns=['1', '2', '3'], index=['1', '2', '3']))
             print('Введите координаты')
             coord = input()
@@ -35,7 +35,7 @@ def xo(symb):
             for elem in range(len(pole[str])):
                 vert = ''.join(np.transpose(pole)[elem])
                 if pole[str][elem] == '-':
-                    # сделать ряд из двух
+                    # make a doublet
                     if compsymb in hor and symb not in hor:
                         weight[str][elem] += 1.1
                     if compsymb in vert and symb not in vert:
@@ -45,7 +45,7 @@ def xo(symb):
                     if compsymb in pdiag and symb not in pdiag and (
                             (str == 0 and elem == 2) or (str == 2 and elem == 0) or (str == 1 and elem == 1)):
                         weight[str][elem] += 1.1
-                    # захватить новый ряд
+                    # get a new line with 1 element
                     if compsymb not in hor and symb not in hor:
                         weight[str][elem] += 1
                     if compsymb not in vert and symb not in vert:
@@ -55,7 +55,7 @@ def xo(symb):
                     if compsymb not in pdiag and symb not in pdiag and (
                             (str == 0 and elem == 2) or (str == 2 and elem == 0) or (str == 1 and elem == 1)):
                         weight[str][elem] += 1
-                    # помешать ряду из одного
+                    # intercept player's line of one symbol
                     if hor.count(symb) == 1 and compsymb not in hor:
                         weight[str][elem] += 1.01
                     if vert.count(symb) == 1 and compsymb not in vert:
@@ -65,7 +65,7 @@ def xo(symb):
                     if pdiag.count(symb) == 1 and compsymb not in pdiag and \
                             ((str == 0 and elem == 2) or (str == 2 and elem == 0) or (str == 1 and elem == 1)):
                         weight[str][elem] += 1.01
-                    # помешать ряду из двух
+                    # intercept player's line of two symbols
                     if hor.count(symb) == 2 and compsymb not in hor:
                         weight[str][elem] += 50
                     if vert.count(symb) == 2 and compsymb not in vert:
@@ -75,7 +75,7 @@ def xo(symb):
                     if pdiag.count(symb) == 2 and compsymb not in pdiag and \
                             ((str == 0 and elem == 2) or (str == 2 and elem == 0) or (str == 1 and elem == 1)):
                         weight[str][elem] += 50
-                    # выиграть
+                    # to win 
                     if hor.count(compsymb) == 2 and symb not in hor:
                         weight[str][elem] += 111
                     if vert.count(compsymb) == 2 and symb not in vert:
@@ -85,11 +85,11 @@ def xo(symb):
                     if pdiag.count(compsymb) == 2 and symb not in pdiag and \
                             ((str == 0 and elem == 2) or (str == 2 and elem == 0) or (str == 1 and elem == 1)):
                         weight[str][elem] += 111
-                    # последний ход
+                    # last move in draw
                     if ''.join(pole.flatten()).count('-') == 1:
                         if pole[str][elem] == '-':
                             weight[str][elem] += 100500
-        # проверка одной хитрости, которую мой алгоритм не видит, когда у противника есть 2 потенциальные вилки
+        # if player got to potential forks
         temp = [[0], [0], [0]]
         check = copy.deepcopy(weight)
         check[0][:] = [x - round(x, 1) for x in check[0]]
@@ -103,7 +103,7 @@ def xo(symb):
                 for el in range(len(check[st])):
                     if round(check[st][el], 2) >= 0.02:
                         weight[st][el] = 0
-        # делаем ход
+        # making move
         temp = [[0], [0], [0]]
         temp[0] = max(weight[0])
         temp[1] = max(weight[1])
@@ -111,7 +111,7 @@ def xo(symb):
         a = temp.index(max(temp))
         b = weight[a].index(max(weight[a]))
         pole[a][b] = compsymb
-        # ход противника и конец игры
+        # players move and end of the game
         if (np.sum(pole[0] == compsymb) < 3 and np.sum(pole[1] == compsymb) < 3 and np.sum(pole[2] == compsymb) < 3 and
             np.sum(np.transpose(pole)[0] == compsymb) < 3 and np.sum(np.transpose(pole)[1] == compsymb) < 3 and
             np.sum(np.transpose(pole)[2] == compsymb) < 3 and
