@@ -89,7 +89,7 @@ def xo(symb):
                     if ''.join(pole.flatten()).count('-') == 1:
                         if pole[str][elem] == '-':
                             weight[str][elem] += 100500
-        # if player got to potential forks
+        # if player got two potential forks
         temp = [[0], [0], [0]]
         check = copy.deepcopy(weight)
         check[0][:] = [x - round(x, 1) for x in check[0]]
