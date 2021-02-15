@@ -30,7 +30,7 @@ def grad_desc_symb(func, max=bool, variablex='x', variabley='y', start=[0, 0], l
         vecy = (diry.subs({variablex: start[0], variabley: start[1]})).n()
         if vecx == 0 and vecy == 0:
             print('Экстремум найден:' + '(' + str(start[0]) + ',' + str(start[1]) + ')')
-            quit()
+            quit()  
         if max == 1:
             start[0] = start[0] + vecx * lam / (abs(float(vecx)) + abs(float(vecy)))
             start[1] = start[1] + vecy * lam / (abs(float(vecx)) + abs(float(vecy)))
