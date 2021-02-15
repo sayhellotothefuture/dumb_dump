@@ -1,0 +1,68 @@
+import requests
+import re
+import wikipedia
+import pymorphy2
+import mwclient
+
+def dicti(word,synonym = bool,dic = 1,lang='ru'):
+    morph = pymorphy2.MorphAnalyzer()
+    if synonym == 1:
+        site = mwclient.Site('ru.wiktionary.org')
+        page = site.pages[word]
+        start = re.search('==== Синонимы ====',str(page.text())).end()
+        end = re.search('==== Антонимы ====', str(page.text())).start()
+        eto = str(page.text())[start:end]
+        subj = re.findall('\[\[(\w+?)\]\]',eto)
+        res = word+':'+ str(subj)
+        print(res)
+        for each in subj:
+            site = mwclient.Site('ru.wiktionary.org')
+            page = site.pages[each].text()
+            if re.match('#перенаправление',str(page))!=None or re.match('#REDIRECT',str(page))!=None:
+                p = morph.parse(each)[0]
+                page = site.pages[p.normal_form]
+            else:
+                page = site.pages[each]
+            if page.text()!='':
+                start = re.search('==== Синонимы ====', str(page.text())).end()
+                end = re.search('==== Антонимы ====', str(page.text())).start()
+                eto = str(page.text())[start:end]
+                subj = re.findall('\[\[(\w+?)\]\]', eto)
+                res = each + ':' + str(subj)
+                print(res)
+    if dic == 1:
+        wikipedia.set_lang(lang)
+        vika =wikipedia.page(word)
+        vika = re.sub('\n', '', vika.summary)
+        vika = re.sub('{(.*?)}','',vika)
+        vika = re.sub('  ','',vika)
+        vika = re.sub('\((.*?)\) —','—',vika)
+        vika = re.sub('\((.*?)\)(.*?)—','—',vika,flags=re.IGNORECASE)
+        isit = re.split(' ',re.search('(.*?)\.',vika).group(0))
+        while isit[0] != '—':
+            del isit[0]
+        pattern = re.compile("['\.','\,','\:','\?','\;']")
+        for each in range(len(isit)):
+            isit[each] =re.sub(pattern,'',isit[each])
+        noun = 0
+        verb = 0
+        prtf = 0
+        for each in isit:
+            kek = morph.parse(each)[0]
+            if 'NOUN' in str(kek.tag):
+                noun+=1
+            if 'VERB' in str(kek.tag):
+                verb+=1
+            if 'INFN' in str(kek.tag):
+                verb+=1
+            if 'PRTF' in str(kek.tag):
+                prtf+=1
+            if 'PRTS' in str(kek.tag):
+                prtf+=1
+            if noun ==2:
+                print(re.search('(.*?)\.',vika).group(0))
+                quit()
+            if verb > 0 and noun>0:
+                print(re.search('(.*?)\.',vika).group(0))
+                quit()
+        print(vika)
