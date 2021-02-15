@@ -1,0 +1,111 @@
+import numpy as np
+from numpy import linalg as LA
+import re
+import copy
+
+
+def equals(A, B, AX=bool):
+    if len(A) == len(B) and len(A) == len(A[0]):
+        matrixa = np.array(A)
+        matrixb = np.array(B)
+        invA = LA.inv(matrixa)
+        if AX == True:
+            X = np.matmul(invA, matrixb)
+            return X
+        else:
+            X = np.matmul(matrixb, invA)
+            return X
+    else:
+        print('tak ne poydet!')
+        return None
+
+
+A = np.random.randint(10, size=(3, 3))
+B = np.random.randint(10, size=(3, 3))
+
+
+# print(equals(A, B, 1))
+
+
+def independence(*vectors):
+    if len(vectors) > 1 and len(vectors) == len(vectors[0]):
+        matrix = []
+        for each in vectors:
+            matrix.append(each)
+        matrix = np.array(matrix)
+        if np.linalg.det(matrix) != 0:
+            print('vectori nezavisimi1')
+        else:
+            print('vectori zavisimi1')
+    elif len(vectors) == 2 and len(vectors[0]) == len(vectors[1]):
+        for each in range(len(vectors[0])):
+            if (vectors[0][each] == 0 and vectors[1][each] != 0) or (vectors[1][each] == 0 and vectors[0][each] != 0):
+                print('vectori nezavisimi2')
+                exit()
+            elif vectors[0][each] == 0 and vectors[1][each] == 0:
+                continue
+            else:
+                a = vectors[0][0] / vectors[1][0]
+                if vectors[0][each] / vectors[1][each] != a:
+                    print('vectori nezavisimi3')
+                    exit()
+                else:
+                    continue
+        print('vectori zavisimi3')
+    elif len(vectors) > len(vectors[0]):
+        print('vectori zavisimi4')
+    else:
+        print('nedostatochno opita')
+
+
+independence([43, 13, 17], [23, 53, 7], [13, 19, 11])
+
+
+def conspect(string):
+    string = string.lower()
+    sign = re.compile('[ ,!,@,#,%,^,&,*,\(,\),\,,\.,/,\,\|,<,>,\',№,;,%,:,?,\*,\+,\-,\=,\n]+')
+    massiv = sign.split(string)
+    del massiv[len(massiv) - 1]
+    spisok = []
+    for item in massiv:
+        if item not in spisok:
+            spisok.append(item)
+    #    spisok = np.unique(massiv)
+    spisok1 = copy.deepcopy(spisok)
+    massiv1 = re.split('\.', string)
+    f = 2
+    while f > 0:
+        f = 0
+        for each in range(len(spisok1) - 1):
+            if len(spisok1[each]) < len(spisok1[each + 1]):
+                a = spisok1[each]
+                b = spisok1[each + 1]
+                spisok1[each] = b
+                spisok1[each + 1] = a
+                f += 1
+    for each1 in spisok1:
+        a = list(spisok).index(each1) + 1
+        for each in range(len(massiv1)):
+            massiv1[each] = re.sub(each1, str(a), massiv1[each])
+    print(massiv1)
+
+
+conspect('Написать функцию кодирования текста. На вход подается строка текста на естественном языке. На выходе нужно иметь двумерный массив, где каждая строка - это предложение текста, а ее элемента номера слов словаря. Словарь - отображение из множества слов в множество натуральных чисел.')
+
+
+def gauss(matrix):
+    for each in range(len(matrix)):
+        if matrix[each][each] == 0:
+            print('ne umeu s 0 na glavnoy diaganali,sorry!')
+            quit()
+    number = 0
+    while number <= len(matrix[0]) - 2:
+        for string in range(number + 1, len(matrix)):
+            a = matrix[string][number] / matrix[number][number]
+            for elements in range(len(matrix[0])):
+                matrix[string][elements] = matrix[string][elements] - a * matrix[number][elements]
+        number += 1
+    return matrix
+
+
+print(gauss([[1,2],[3,4]]))
