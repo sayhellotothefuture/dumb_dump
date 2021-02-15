@@ -4,6 +4,55 @@ import wikipedia
 import pymorphy2
 import mwclient
 
+def replace(path, v, w, reg=bool):
+    file = open(path, 'r')
+    text = file.read()
+    textlist = text.split(' ')
+    if reg == False:
+        a= v.lower()
+        textlower = [0 for i in range(len(textlist))]
+        for each in range(len(textlist)):
+            textlower[each] = textlist[each].lower()
+        for each in range(len(textlower)):
+            if textlower[each] == a:
+                textlist[each] = w
+            elif textlower[each] == a + ',':
+                textlist[each] = w + ','
+            elif textlower[each] == a + '.':
+                textlist[each] = w + '.'
+    else:
+        for each in range(len(textlist)):
+            if textlist[each] == v:
+                textlist[each] = w
+            elif textlist[each] == v + ',':
+                textlist[each] = w + ','
+            elif textlist[each] == v + '.':
+                textlist[each] = w + '.'
+    text = ' '.join(textlist)
+    file = open(path, 'w')
+    text = file.write(text)
+
+
+
+
+def remove(path, v):
+    file = open(path, 'r')
+    text = file.read()
+    textlist = text.split(' ')
+    for each in range(len(textlist)):
+        if textlist[each] == v:
+            del textlist[each]
+        elif textlist[each] == v + ',':
+                textlist[each] = ','
+        elif textlist[each] == v + '.':
+                textlist[each] = '.'
+    text = ' '.join(textlist)
+    file = open(path, 'w')
+    text = file.write(text)
+
+remove('C:/Users/dimazavr/path.txt', 'Finally')
+replace('C:/Users/dimazavr/path.txt','finally', 'at last', 0)
+
 def dicti(word,synonym = bool,dic = 1,lang='ru'):
     morph = pymorphy2.MorphAnalyzer()
     if synonym == 1:
