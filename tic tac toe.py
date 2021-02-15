@@ -45,7 +45,7 @@ def xo(symb):
                     if compsymb in pdiag and symb not in pdiag and (
                             (str == 0 and elem == 2) or (str == 2 and elem == 0) or (str == 1 and elem == 1)):
                         weight[str][elem] += 1.1
-                    # get a new line with 1 element
+                    # get a new line with 1 element 
                     if compsymb not in hor and symb not in hor:
                         weight[str][elem] += 1
                     if compsymb not in vert and symb not in vert:
