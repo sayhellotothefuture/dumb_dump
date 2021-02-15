@@ -1,0 +1,47 @@
+import sympy
+from sympy import diff, symbols
+
+
+def newton(func, variable='x', start=0, eps=0.0001):
+    variable = symbols(variable)
+    dir = diff(func, variable)
+    func = sympy.core.sympify(func)
+    xk = start
+    xk1 = start + 1
+    while abs(xk - xk1) > eps:
+        xk = xk1
+        anum = (func.subs({variable: xk})).n()
+        dirnum = (dir.subs({variable: xk})).n()
+        xk1 = xk - anum / dirnum
+    print(xk1)
+
+
+def grad_desc_symb(func, max=bool, variablex='x', variabley='y', start=[0, 0], lam=0.01, eps=0.0001):
+    func = sympy.core.sympify(func)
+    variablex = symbols(variablex)
+    variabley = symbols(variabley)
+    dirx = diff(func, variablex)
+    diry = diff(func, variabley)
+    fun = 1
+    fun1 = 1 + lam
+    while abs(float(fun1) - float(fun)) > eps:
+        fun = (func.subs({variablex: start[0], variabley: start[1]})).n()
+        vecx = (dirx.subs({variablex: start[0], variabley: start[1]})).n()
+        vecy = (diry.subs({variablex: start[0], variabley: start[1]})).n()
+        if vecx == 0 and vecy == 0:
+            print('Экстремум найден:' + '(' + str(start[0]) + ',' + str(start[1]) + ')')
+            quit()
+        if max == 1:
+            start[0] = start[0] + vecx * lam / (abs(float(vecx)) + abs(float(vecy)))
+            start[1] = start[1] + vecy * lam / (abs(float(vecx)) + abs(float(vecy)))
+            fun1 = (func.subs({variablex: start[0], variabley: start[1]})).n()
+        else:
+            start[0] = start[0] - vecx * lam / (abs(float(vecx)) + abs(float(vecy)))
+            start[1] = start[1] - vecy * lam / (abs(float(vecx)) + abs(float(vecy)))
+            fun1 = (func.subs({variablex: start[0], variabley: start[1]})).n()
+            print(start[0], start[1])
+    print('Экстремум найден:' + '(' + str(start[0]) + ',' + str(start[1]) + ')')
+
+
+#a = grad_desc_symb('x^2+y^2', max=0, start=[1, 0], eps=0.0001, lam=0.01)
+#a = newton('exp(x)-x-2', 'x')
