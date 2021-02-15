@@ -1,0 +1,52 @@
+class Matrix():
+    def __init__(self, *value):
+        self.value = [*value]
+
+    def __add__(self, other):
+        if len(self.value) == len(other.value):
+            res = [[0 for x in range(len(self.value))] for y in range(len(self.value[0]))]
+            for i in range(len(self.value)):
+                if len(self.value[i]) == len(other.value[i]):
+                    for j in range(len(self.value[i])):
+                        res[i][j] = (self.value[i][j] + other.value[i][j])
+                else:
+                    print('razmeri matric ne covpadaut')
+                    return None
+                    break
+        else:
+            print('razmeri matric ne covpadaut')
+            return None
+        return Matrix(res)
+
+    def __mul__(self, other):
+        if range(len(self.value[0])) == range(len(other.value)):
+            res = [[0 for x in range(len(self.value))] for y in range(len(other.value[0]))]
+            for next_string in range(len(self.value)):
+                for next_column in range(len(self.value)):
+                    for element in range(len(self.value[0])):
+                        res[next_string][next_column] += self.value[next_string][element] * other.value[element][
+                            next_column]
+            return Matrix(res)
+        elif len(other.value) == 1:
+            res = [[0 for x in range(len(self.value))] for y in range(len(self.value[0]))]
+            for next_column in range(len(self.value)):
+                for element in range(len(self.value[0])):
+                    res[next_column][element] = self.value[next_column][element] * other.value[0][0]
+            return Matrix(res)
+        else:
+            print('matrici ne podhodyashikh razmerov')
+            return None
+
+    def trace(self):
+        if range(len(self.value[0])) == range(len(self.value)):
+            trace = 0
+            for i in range(len(self.value)):
+                trace += self.value[i][i]
+                return trace
+        else:
+            print('matrica ne kvadratnaya')
+            return None
+
+        class Matrix():
+            def __init__(self, *value):
+                self.value = [*value]
